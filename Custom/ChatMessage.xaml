@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="ZTM.Custom.ChatMessage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ZTM.Custom"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Border Name="CMBorder" Background="White">
+        <Grid Margin="0, 5, 0, 5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="40"/>
+            </Grid.ColumnDefinitions>
+
+            <Ellipse Grid.Column="0"
+                 Width="40"
+                 Height="40"
+                 VerticalAlignment="Top"
+                 Name="CMAvatar">
+                <Ellipse.Fill>
+                    <ImageBrush ImageSource="E:\Developement\VSProjects\Projects\ZTM\ZTM\Pics\default.png"/>
+                </Ellipse.Fill>
+            </Ellipse>
+
+            <TextBlock Grid.Column="1"
+                       Name="CMMessage"
+                       />
+
+            <TextBlock Grid.Column="2"
+                       Name="CMTime"/>
+
+        </Grid>
+    </Border>
+    
+</UserControl>

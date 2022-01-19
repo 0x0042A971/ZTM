@@ -1,0 +1,25 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:ZTM.Styles">
+    <Style TargetType="Button"
+           x:Key="FancyButton">
+        <Setter Property="Background"
+                Value="Transparent"/>
+        <Setter Property="BorderThickness"
+                Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Image x:Name="ButtonImage"
+                           RenderOptions.BitmapScalingMode="HighQuality"
+                           Width="16"
+                           Height="16"
+                           Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Tag}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"
+                           Stretch="UniformToFill"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
