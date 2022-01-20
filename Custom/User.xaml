@@ -24,7 +24,7 @@
                      Name="Avatar"
                              Margin="4, 4, 4, 4">
                 <Ellipse.Fill>
-                    <ImageBrush ImageSource="E:\Developement\VSProjects\Projects\ZTM\ZTM\Pics\default.png"/>
+                    <ImageBrush ImageSource="pack://application:,,,/ZTM;component/Pics/default.png"/>
                 </Ellipse.Fill>
             </Ellipse>
 

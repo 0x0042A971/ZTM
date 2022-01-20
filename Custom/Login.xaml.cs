@@ -61,7 +61,7 @@ namespace ZTM.Custom
                 MainWindow.users = MainWindow.ZTUser.fetch(TextBoxApi.Text, TextBoxNetwork.Text);
                 if(MainWindow.ZTUser.IsOK) this.Visibility = Visibility.Collapsed;
             }
-            catch
+            catch (Exception ex)
             {
 
             }

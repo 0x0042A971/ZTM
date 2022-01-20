@@ -298,7 +298,7 @@ namespace ZTM
         {
             if (!first_UpdateUsers)
             {
-                for (int i = 0; i < UIusers.Length - 1; i++)
+                for (int i = 0; i < UIusers.Length; i++)
                 {
                     UIusers[i].Backg.Background = i % 2 == 0 ? brush_even : brush_odd;
                     UIusers[i].OnlineStatus.Stroke = i % 2 == 0 ? brush_even : brush_odd;
@@ -347,14 +347,14 @@ namespace ZTM
                     Array.Resize<Custom.User>(ref UIusers, users.Length);
                     if (temp_count > UIusers.Length) // Если людей стало меньше - скрывает неиспользуемые позиции
                     {
-                        for (int i = UIusers.Length; i < temp_count - 1; i++)
+                        for (int i = UIusers.Length; i < temp_count ; i++)
                         {
                             UIusers[i].Visibility = Visibility.Collapsed;
                         }
                     }
                     if (temp_count < UIusers.Length) // Если людей стало больше - создает новые позиции
                     {
-                        for (int i = temp_count; i < UIusers.Length - 1; i++)
+                        for (int i = temp_count; i < UIusers.Length ; i++)
                         {
                             UIusers[i] = new Custom.User();
                             ((MainWindow)Application.Current.MainWindow).UsersStackPanel.Children.Add(UIusers[i]);
@@ -369,7 +369,7 @@ namespace ZTM
                 ((MainWindow)Application.Current.MainWindow).RButton.Visibility = Visibility.Visible;
                  SetTimer();
 
-                for (int i = 0; i < users.Length - 1; i++)
+                for (int i = 0; i < users.Length ; i++)
                 {
                     UIusers[i] = new Custom.User();
                     ((MainWindow)Application.Current.MainWindow).UsersStackPanel.Children.Add(UIusers[i]);
@@ -393,7 +393,7 @@ namespace ZTM
         private static void UpdateInfo()
         {
             if (UIusers is null) return;
-            for (int i = 0; i < users.Length - 1; i++)
+            for (int i = 0; i < users.Length; i++)
             {
                 UIusers[i].Visibility = Visibility.Visible;
                 UIusers[i].NameUser.Text = users[i].Name;
@@ -410,7 +410,7 @@ namespace ZTM
         private static void UpdateIcons()
         {
             if (UIusers is null) return;
-            for (int i = 0; i < users.Length - 1; i++)
+            for (int i = 0; i < users.Length; i++)
             {
                 BitmapImage pic = new BitmapImage();
                 try
@@ -421,7 +421,7 @@ namespace ZTM
                 }
                 catch
                 {
-                    pic = new BitmapImage(new Uri("Pics/default.png"));
+                    pic = new BitmapImage(new Uri("pack://application:,,,/ZTM;component/Pics/default.png"));
                 }
 
                 UIusers[i].Avatar.Fill = new ImageBrush(pic);
