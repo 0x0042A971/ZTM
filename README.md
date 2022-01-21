@@ -16,6 +16,13 @@ Dark theme included.
 
 ![zt](https://user-images.githubusercontent.com/97065300/150563603-e922389f-fecd-44ac-8db6-1e1e671d9f3c.png)
 
+# How to use
+First, create a network in ZeroTier. Second, invite everyone you want. Third, fill their usernames/descriptions/ip fields.
+
+Next, generate new API key at https://my.zerotier.com/account. Copy it, open settings tab in the UI (bottom right button), paste API key (button on the right or ctrl+v). This way you will get "encrypted" API key.
+
+Now send this "encrypted" key and network id (not "encrypted") to everyone who needs access to UI.
+
 # Security
 This UI uses network administator API key in http request. Since whole code is open sourced it is not very secure.
 
