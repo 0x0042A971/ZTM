@@ -482,7 +482,11 @@ namespace ZTM
 
             for (int i = 0; i < input.Length; i++)
             {
-                _input[i] = alphabet[(Array.IndexOf<char>(alphabet, _input[i]) + caesar_shift) % alphabet.Length];
+                int ch_index = Array.IndexOf<char>(alphabet, _input[i]);
+                int ch_index_shift = ch_index + caesar_shift;
+                int ch_fin = ch_index_shift % alphabet.Length;
+                ch_fin = ch_fin < 0 ? alphabet.Length + ch_fin : ch_fin;
+                _input[i] = alphabet[ch_fin];
             }
 
             return new string(_input);
@@ -495,7 +499,18 @@ namespace ZTM
 
             for (int i = 0; i < input.Length; i++)
             {
-                _input[i] = alphabet[(Array.IndexOf<char>(alphabet, _input[i]) - caesar_shift) % alphabet.Length];
+                try
+                {
+                    int ch_index = Array.IndexOf<char>(alphabet, _input[i]);
+                    int ch_index_shift = ch_index - caesar_shift;
+                    int ch_fin = ch_index_shift % alphabet.Length;
+                    ch_fin = ch_fin < 0 ? alphabet.Length + ch_fin : ch_fin;
+                    _input[i] = alphabet[ch_fin];
+                }
+                catch (Exception e)
+                {
+                    string a = e.ToString();
+                }
             }
 
             return new string(_input);
