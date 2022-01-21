@@ -15,3 +15,8 @@ The link to the profile picture should be stored in the "Description" in ZeroTie
 Dark theme included.
 
 ![zt](https://user-images.githubusercontent.com/97065300/150563603-e922389f-fecd-44ac-8db6-1e1e671d9f3c.png)
+
+# Security
+This UI uses network administator API key in http request. Since whole code is open sourced it is not very secure.
+
+If you need security, pack your own encryption and decriptions alogorithms and http request to some c++ library.
