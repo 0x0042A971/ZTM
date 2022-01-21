@@ -93,17 +93,24 @@
                         Style="{StaticResource FancyButton}"
                         Tag="pack://application:,,,/ZTM;component/Pics/moon.png"
                         />
-                <Button Margin="0, 0, 96, 0"
+                <Button Margin="0, 0, 0, 0"
                         Name="RButton"
                         Click="RButton_Click"
                         Style="{StaticResource FancyButton}"
                         Tag="pack://application:,,,/ZTM;component/Pics/rotating_arrows.png"
-                        Visibility="Hidden"
+                        Visibility="Visible"
+                        />
+                <Button Margin="80, 0, 0, 0"
+                        Name="SettingsButton"
+                        Click="SettingsButton_Click"
+                        Style="{StaticResource FancyButton}"
+                        Tag="pack://application:,,,/ZTM;component/Pics/settings.png"
                         />
             </StackPanel>
             <Border Grid.Row="3" Background="LightGray"/>
 
-            <uc:Login Margin="0, 100, 0, -300"></uc:Login>
+            <uc:Login Margin="0, 100, 0, -300"
+                      x:Name="LoginUI"></uc:Login>
             
         </Grid>
     </Border>

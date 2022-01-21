@@ -27,6 +27,7 @@
                     <ImageBrush ImageSource="pack://application:,,,/ZTM;component/Pics/default.png"/>
                 </Ellipse.Fill>
             </Ellipse>
+            
 
             <Ellipse Grid.Column="1"
                      Name="OnlineStatus"

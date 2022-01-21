@@ -63,7 +63,7 @@ namespace ZTM.Custom
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(ex.ToString());
             }
         }
 
@@ -90,5 +90,6 @@ namespace ZTM.Custom
                 MessageBox.Show(ex.ToString());
             }
         }
+        
     }
 }

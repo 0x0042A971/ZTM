@@ -27,17 +27,16 @@ namespace ZTM
         {
             InitializeComponent();
             Loaded += MainWindow_Loaded;
-        }
-
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-                this.DragMove();
+            NetworkID.MouseEnter += NetworkID_MouseEnter;
+            NetworkID.MouseLeave += NetworkID_MouseLeave;
+            NetworkID.MouseLeftButtonDown += NetworkID_MouseLeftButtonDown;
+            this.Closing += MainWindow_Closing;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             SetupColors();
+            alphabet = "P5qw4l6RA0mb9ZnUuDVTKcgpfCk21FJaEWozY78BHN3IhOXxMvSyQLGijderst".ToCharArray();
         }
 
         #region ZeroTier
@@ -46,12 +45,12 @@ namespace ZTM
             private string _Id;
             private string _Name;
             private string _Description;
-            private string _IpAddress;
+            private string _IpAddress;  // Multiple IP addresses are not supported (yet)
             private bool _IsOnline;
-            private bool _IsAuthorized;
-            private DateTime _LastSeen;
+            private bool _IsAuthorized; // Unused
+            private DateTime _LastSeen; // Unused
             private static int _UserCount;
-            private static bool _IsOK;
+            private static bool _IsOK;  // Indicates if fetch was succesful
 
             public string Id { get { return _Id; } }
             public string Name { get { return _Name; } }
@@ -132,9 +131,10 @@ namespace ZTM
                 Console.WriteLine($"Authorized: {IsAuthorized}");
             }
 
-            public static ZTUser[] fetch(string bearer, string network)
+            public static ZTUser[] fetch(string bearer, string network, bool cipher = true)
             {
                 _IsOK = false;
+                if (cipher) bearer = Decrypt(bearer);
 
                 HttpWebRequest Req = (HttpWebRequest)WebRequest.Create($"https://my.zerotier.com/api/v1/network/{network}/member");
                 Req.Headers.Add("authorization", $"bearer {bearer}");
@@ -233,22 +233,25 @@ namespace ZTM
         #endregion
 
         #region Colors
+
+        // "Indexes"
         private readonly BrushConverter bc = new BrushConverter();
-        private static Brush brush_offline; // Цвет круга статуса возле аватарки - Не в сети
-        private static Brush brush_online;  // Цвет круга статуса возле аватарки - В сети
-        private static Brush brush_even;    // Цвет заднего плана блока Custom.User
-        private static Brush brush_odd;     // Цвет заднего плана блока Custom.User 
-        private static Brush brush_back;    // Цвет заднего плана самой формы
-        public static Brush brush_text;    // Цвет текста
-        public static Brush brush_copy;     // Цвет текста при копировании
-        private string arrows_path;         // Путь до иконки со стрелочками
-        private string moon_path;         // Путь до иконки с луной
-        private string cross_path;         // Путь до иконки с крестиком
-        private string minus_path;         // Путь до иконки с минусом
-        private string copy_path;         // Путь до иконки с копированием
+        private static Brush brush_offline;
+        private static Brush brush_online; 
+        private static Brush brush_even;   
+        private static Brush brush_odd;   
+        private static Brush brush_back;   
+        public static Brush brush_text;   
+        public static Brush brush_copy;   
+        private string arrows_path;       
+        private string moon_path;         
+        private string cross_path;        
+        private string minus_path;        
+        private string copy_path;         
+        private string settings_path;     
 
         /// <summary>
-        /// Переключает темную/светлую тему
+        /// Shifts white/dark theme - step 1/2. Changes "indexes" of colors and pics pathes.
         /// </summary>
         private void SetupColors()
         {
@@ -268,6 +271,7 @@ namespace ZTM
                 cross_path = "pack://application:,,,/ZTM;component/Pics/cross_white.png";
                 minus_path = "pack://application:,,,/ZTM;component/Pics/minus_white.png";
                 copy_path = "pack://application:,,,/ZTM;component/Pics/copy_white.png";
+                settings_path = "pack://application:,,,/ZTM;component/Pics/settings_white.png";
             }
             else
             {
@@ -289,11 +293,15 @@ namespace ZTM
                 cross_path = "pack://application:,,,/ZTM;component/Pics/cross.png";
                 minus_path = "pack://application:,,,/ZTM;component/Pics/minus.png";
                 copy_path = "pack://application:,,,/ZTM;component/Pics/copy.png";
+                settings_path = "pack://application:,,,/ZTM;component/Pics/settings.png";
             }
 
             Recolor();
         }
 
+        /// <summary>
+        /// Shifts white/dark theme - step 2/2. This one applies "indexes"
+        /// </summary>
         private void Recolor()
         {
             if (!first_UpdateUsers)
@@ -312,10 +320,15 @@ namespace ZTM
             Backg.Background = brush_back;
             NetworkID.Foreground = brush_text;
 
+            LoginUI.TextBlockKey.Foreground = brush_text;
+            LoginUI.TextBlockNetwork.Foreground = brush_text;
+            LoginUI.TextBlockCB.Foreground = brush_text;
+
             RButton.Tag = arrows_path;
             RecolorButton.Tag = moon_path;
             CloseButton.Tag = cross_path;
             MinimizeButton.Tag = minus_path;
+            SettingsButton.Tag = settings_path;
         }
 
         private bool _darkmode = false;
@@ -335,7 +348,7 @@ namespace ZTM
         private static bool first_UpdateUsers = true;
 
         /// <summary>
-        /// Обновляет форму. Добавляет на форму пользователей, если их еще нет. Далее обновляет информацию о пользователях и их иконки.
+        /// Updates users list on form. After that calls UpdateInfo() and UpdateIcons().
         /// </summary>
         private static void UpdateUsers()
         {
@@ -381,14 +394,14 @@ namespace ZTM
             UpdateIcons();
             ((MainWindow)Application.Current.MainWindow).RotateArrows();
 
-            ((MainWindow)Application.Current.MainWindow).NetworkID.Text = $"Network: {_NetID}";
+            ((MainWindow)Application.Current.MainWindow).NetworkID.Text = $"Network: xxxxxxxxxxxxxxxx";
 
             first_UpdateUsers = false;
             ((MainWindow)Application.Current.MainWindow).Recolor();
         }
 
         /// <summary>
-        /// Обновляет информацию о каждом пользователе.
+        /// Updates UIusers - applies updates from users to UIusers
         /// </summary>
         private static void UpdateInfo()
         {
@@ -402,16 +415,16 @@ namespace ZTM
                 UIusers[i].Index.Text = i + "";
             }
         }
-        
-         /// <summary>
-         /// Обновляет все иконки пользователей на форме.
-         /// Путь до иконок хранится в desription пользователя.
-         /// </summary>
+
+        /// <summary>
+        /// Updates profile pictures. Uses the "Description" field in zerotier to get the path to the picture.
+        /// </summary>
         private static void UpdateIcons()
         {
             if (UIusers is null) return;
             for (int i = 0; i < users.Length; i++)
             {
+                string usr = users[i].Name;
                 BitmapImage pic = new BitmapImage();
                 try
                 {
@@ -423,16 +436,12 @@ namespace ZTM
                 {
                     pic = new BitmapImage(new Uri("pack://application:,,,/ZTM;component/Pics/default.png"));
                 }
-
                 UIusers[i].Avatar.Fill = new ImageBrush(pic);
             }
 
             ((MainWindow)Application.Current.MainWindow).NetworkID.Text = $"Network: {_NetID}";
         }
-
-        /// <summary>
-        /// Настройка таймера. Таймер раз в 15 секунд обновляет пользователей. 
-        /// </summary>
+        
         private static void SetTimer()
         {
             dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
@@ -458,10 +467,91 @@ namespace ZTM
         }
         public static string NetID
         {
-            set
+            set { _NetID = value; }
+        }
+        #endregion
+
+        #region Cipher
+        private static char[] alphabet;
+        private static int caesar_shift = 4;
+
+        public static string Encrypt(string input)
+        {
+            if (input.Length < 1) return "";
+            char[] _input = input.ToCharArray();
+
+            for (int i = 0; i < input.Length; i++)
             {
-                _NetID = value;
+                _input[i] = alphabet[(Array.IndexOf<char>(alphabet, _input[i]) + caesar_shift) % alphabet.Length];
             }
+
+            return new string(_input);
+        }
+
+        public static string Decrypt(string input)
+        {
+            if (input.Length < 1) return "";
+            char[] _input = input.ToCharArray();
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                _input[i] = alphabet[(Array.IndexOf<char>(alphabet, _input[i]) - caesar_shift) % alphabet.Length];
+            }
+
+            return new string(_input);
+        }
+        #endregion
+
+        #region Form Events
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                this.DragMove();
+        }
+        
+        private void NetworkID_MouseEnter(object sender, MouseEventArgs e)
+        {
+            try
+            {
+                if (_NetID.Length > 0) NetworkID.Text = $"Network: {_NetID}";
+            }
+            catch
+            {
+                NetworkID.Text = $"Network: xxxxxxxxxxxxxxxx";
+            }
+        }
+
+        private void NetworkID_MouseLeave(object sender, MouseEventArgs e)
+        {
+            NetworkID.Text = $"Network: xxxxxxxxxxxxxxxx";
+        }
+
+        private void NetworkID_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                Clipboard.SetText(_NetID);
+            }
+            catch { }
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            try
+            {
+                sf.Close();
+            }
+            catch { }
+        }
+
+        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
 
         private void RotateArrows()
@@ -482,16 +572,13 @@ namespace ZTM
             await Task.Delay(1000);
             RButton.IsEnabled = true;
         }
+
+        ZTM.Forms.Settings sf;
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            sf = new ZTM.Forms.Settings();
+            sf.Show();
+        }
         #endregion
-
-        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.WindowState = WindowState.Minimized;
-        }
-
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
     }
 }
