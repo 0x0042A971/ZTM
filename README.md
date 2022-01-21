@@ -1,8 +1,17 @@
 # ZTM
-Simple, clean UI for ZeroTier.
+Simple, clean UI for ZeroTier network.
 
-For network members, not for admins.
+**Why:** Let's say you have some friends, who aren't tech savvy at all. The most "hacker" thing they did was to change the stone texture in minecraft.jar to a transparent rectangle. You want to play LAN games with them and for whatever reason decided to use ZeroTier. While network administrators can use ZeroTier Central's user-friendly interface, common folk has to suffer and constantly ask for the IP address of network members - both others and their own.
 
-Online/offline indicator, name, user icon (fetches from description field in zerotier network), ip.
+# UI
+UI provides some basic info about each member in network
+- Username
+- IP address
+- Online/Offline indicator
+- Profile picture
 
-![zt](https://user-images.githubusercontent.com/97065300/150230508-3dd9e747-3b65-4c5f-9074-1ce21c631b7c.png)
+The link to the profile picture should be stored in the "Description" in ZeroTier network, otherwise UI will use my paint drawing.
+
+Dark theme included.
+
+![zt](https://user-images.githubusercontent.com/97065300/150563603-e922389f-fecd-44ac-8db6-1e1e671d9f3c.png)
